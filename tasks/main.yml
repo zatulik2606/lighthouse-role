@@ -1,0 +1,20 @@
+---
+# tasks file for lighthouse-role
+- name: Install git
+  become: true
+  yum:
+    name: git
+    state: present
+- name: Copy lighthouse rfom git
+  git:
+    repo: "{{ lighthouse_vcs }}"
+    version: master
+    dest: "{{ lighthouse_dir }}"
+  become: true
+- name: Create lighthouse config
+  become: true
+  template:
+    src: lighthouse.j2
+    dest: /etc/nginx/conf.d/default.conf
+    mode: 0644
+  notify: Reload nginx service
